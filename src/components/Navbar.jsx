@@ -1,8 +1,9 @@
 import React from 'react';
-
-import { Typography, Box } from '@mui/material';
-import SearchBar from './SearchBar';
 import { Link } from 'react-router-dom';
+import { Typography, Box, Button } from '@mui/material';
+import UploadIcon from '@mui/icons-material/Upload';
+
+import SearchBar from './SearchBar';
 
 const Navbar = () => {
   return (
@@ -22,12 +23,26 @@ const Navbar = () => {
         zIndex: 100,
       }}
     >
-      <Link to='/' style={{ textDecoration: 'none' }}>
+      <Link to="/" style={{ textDecoration: 'none' }}>
         <Typography sx={{ fontSize: 25, color: 'red', fontWeight: 800 }}>
-          U📺tube
+          D📺live
         </Typography>
       </Link>
-      <SearchBar />
+      <Box
+        sx={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          gap: '10',
+        }}
+      >
+        <Link to="/upload" style={{ display: 'flex', textDecoration: 'none' }}>
+          <Button sx={{ mr: 2 }} variant="outlined" startIcon={<UploadIcon />}>
+            Upload
+          </Button>
+        </Link>
+
+        <SearchBar />
+      </Box>
     </Box>
   );
 };

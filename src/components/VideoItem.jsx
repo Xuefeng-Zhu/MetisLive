@@ -2,19 +2,15 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { Typography, Card, CardContent, CardMedia } from '@mui/material';
 
-const VideoItem = ({ video, id }) => {
+const VideoItem = ({ metadata, id }) => {
   return (
     <Link
-      to={
-        video?.snippet?.thumbnails?.high.url
-          ? `/video-details/${id}`
-          : `/video-details/cV2gBU6hKfY`
-      }
+      to={`/video-details/${id}`}
       style={{ textDecoration: 'none' }}
       onClick={() => window.scrollTo(0, 0)}
     >
       <Card
-        className='recipe-card'
+        className="recipe-card"
         sx={{
           width: 400,
           height: 310,
@@ -23,18 +19,18 @@ const VideoItem = ({ video, id }) => {
         }}
       >
         <CardMedia
-          component='img'
-          height='250'
+          component="img"
+          height="250"
           image={
-            video?.snippet?.thumbnails?.high.url ||
+            metadata?.image ||
             'https://i.pinimg.com/474x/30/88/a3/3088a3ebaf713600adacd00397ee410d.jpg'
           }
-          alt='green iguana'
+          alt="green iguana"
           sx={{ borderRadius: 2 }}
         />
         <CardContent>
           <Typography sx={{ fontSize: 16, fontWeight: 600 }}>
-            {video?.snippet?.title}
+            {metadata?.name}
           </Typography>
         </CardContent>
       </Card>

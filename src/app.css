@@ -80,3 +80,9 @@
     gap: 0px !important;
   }
 }
+
+.upload-form {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+}
