@@ -16,10 +16,10 @@ const VideoDetail = () => {
   const { isLoading, data } = useQuery(['NFTDetails', id], () =>
     retrieveNFTDetails(id)
   );
-  const videoDetail = data?.nft.metadata;
-  const videoSrc = videoDetail?.playbackId
-    ? `https://cdn.livepeer.com/hls/${videoDetail?.playbackId}/index.m3u8`
-    : videoDetail?.external_url;
+  const videoDetail = data?.nft;
+  const videoSrc = videoDetail?.metadata.playbackId
+    ? `https://cdn.livepeer.com/hls/${videoDetail?.metadata.playbackId}/index.m3u8`
+    : videoDetail?.metadata.external_url;
 
   if (isLoading) {
     return <Loader />;
@@ -44,7 +44,7 @@ const VideoDetail = () => {
         <Box className="video-detail">
           <ReactPlayer className="video-card" controls url={videoSrc} />
           <Typography sx={{ fontSize: 18, fontWeight: 600 }}>
-            {videoDetail?.name}
+            {videoDetail?.metadata.name}
           </Typography>
           <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
             <Box sx={{ opacity: 0.7 }}>
@@ -102,7 +102,7 @@ const VideoDetail = () => {
                 </Typography>
               </Box>*/}
           </Box>
-          <Typography>{videoDetail?.description}</Typography>
+          <Typography>{videoDetail?.metadata.description}</Typography>
         </Box>
       </Box>
     </Box>

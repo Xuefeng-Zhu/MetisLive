@@ -70,7 +70,7 @@ const SearchFeed = () => {
       async (blob) => {
         setSubmitting(true);
 
-        const thumbnail = await uploadFile(values.thumbnail && blob);
+        const thumbnail = await uploadFile(values.thumbnail || blob);
         const video = await uploadFile(values.video);
         await mintNFT(
           {
