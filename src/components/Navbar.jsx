@@ -29,7 +29,7 @@ const Navbar = () => {
     >
       <Link to="/" style={{ textDecoration: 'none' }}>
         <Typography sx={{ fontSize: 25, color: 'red', fontWeight: 800 }}>
-          D📺tube
+          D📺live
         </Typography>
       </Link>
       <Box
