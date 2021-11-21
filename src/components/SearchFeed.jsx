@@ -22,7 +22,7 @@ const SearchFeed = () => {
         mt: 10,
       }}
     >
-      {data.length !== 0 &&
+      {data &&
         data.map((video) => (
           <VideoItem
             key={video.id.videoId}

@@ -7,17 +7,15 @@ import { useStateContext } from '../contexts/StateContextProvider';
 const SearchBar = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const history = useHistory();
-  const { fetchData } = useStateContext();
 
   const onhandleSubmit = (e) => {
     e.preventDefault();
     history.push('/search');
-    fetchData(`search?part=snippet&q=${searchTerm}`);
   };
 
   return (
     <Paper
-      component='form'
+      component="form"
       onSubmit={onhandleSubmit}
       sx={{
         borderRadius: 20,
@@ -28,8 +26,8 @@ const SearchBar = () => {
       }}
     >
       <input
-        className='search-bar'
-        placeholder='Search...'
+        className="search-bar"
+        placeholder="Search..."
         value={searchTerm}
         onChange={(e) => {
           if (e.target.value !== '') {
@@ -37,7 +35,7 @@ const SearchBar = () => {
           }
         }}
       />
-      <IconButton type='submit' sx={{ p: '10px' }} aria-label='search'>
+      <IconButton type="submit" sx={{ p: '10px' }} aria-label="search">
         <SearchIcon />
       </IconButton>
     </Paper>
