@@ -1,41 +1,43 @@
 import axios from 'axios';
-import React, { createContext, useContext, useState } from 'react';
+import React, { createContext, useContext, useState, useEffect } from 'react';
+import { useMap } from 'react-use';
 
-const NFT_CONTRACT = '0x43c97b241cD64805BD3066F5b38369aBcE311921';
+import { useWeb3Context } from './Web3ContextProvider';
+import MetisTube from '../contracts/MetisTube';
+
 const NFT_PORT_API = 'https://api.nftport.xyz/v0';
 const StateContext = createContext();
 
 export const StateContextProvider = ({ children }) => {
-  const retrieveContractNFT = async (pageNumber) => {
-    const options = {
-      method: 'GET',
-      url: `${NFT_PORT_API}/nfts/${NFT_CONTRACT}`,
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: process.env.REACT_APP_NFT_PORT_API_KEY,
-      },
-      params: { chain: 'polygon', include: 'all', page_number: pageNumber },
-    };
+  const { provider, signer } = useWeb3Context();
+  const [metisTube, setMetisTube] = useState();
+  const [loading, setLoading] = useState(false);
+  const [videos, { set: setVideo }] = useMap({});
 
-    return axios.request(options).then(function (response) {
-      return response.data;
+  useEffect(async () => {
+    if (!provider) {
+      return;
+    }
+
+    setMetisTube(MetisTube(signer || provider));
+  }, [provider, signer]);
+
+  const retrieveContractNFT = async (pageNumber) => {
+    setLoading(true);
+    const transfers = await metisTube.queryFilter(metisTube.filters.Transfer());
+    setLoading(false);
+
+    transfers.forEach(async (transfer) => {
+      await retrieveNFTDetails(transfer.args.tokenId.toString());
     });
   };
 
   const retrieveNFTDetails = async (tokenId) => {
-    const options = {
-      method: 'GET',
-      url: `${NFT_PORT_API}/nfts/${NFT_CONTRACT}/${tokenId}`,
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: process.env.REACT_APP_NFT_PORT_API_KEY,
-      },
-      params: { chain: 'polygon' },
-    };
+    setLoading(true);
+    const metadata = await metisTube.tokenURI(tokenId);
+    setLoading(false);
 
-    return axios.request(options).then(function (response) {
-      return response.data;
-    });
+    setVideo(tokenId, { tokenId, metadata: JSON.parse(metadata) });
   };
 
   const createStream = async (name) => {
@@ -100,43 +102,9 @@ export const StateContextProvider = ({ children }) => {
     });
   };
 
-  const uploadMetadata = async (data) => {
-    const options = {
-      method: 'POST',
-      url: `${NFT_PORT_API}/metadata`,
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: process.env.REACT_APP_NFT_PORT_API_KEY,
-      },
-      data,
-    };
-
-    return axios.request(options).then(function (response) {
-      return response.data;
-    });
-  };
-
   const mintNFT = async (data, address) => {
-    const metadata = await uploadMetadata(data);
-
-    const options = {
-      method: 'POST',
-      url: `${NFT_PORT_API}/mints/customizable`,
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: process.env.REACT_APP_NFT_PORT_API_KEY,
-      },
-      data: {
-        chain: 'polygon',
-        contract_address: NFT_CONTRACT,
-        metadata_uri: metadata.metadata_uri,
-        mint_to_address: address,
-      },
-    };
-
-    return axios.request(options).then(function (response) {
-      return response.data;
-    });
+    data.date = new Date();
+    await metisTube.claimToken(address, JSON.stringify(data));
   };
 
   return (
@@ -146,8 +114,10 @@ export const StateContextProvider = ({ children }) => {
         retrieveNFTDetails,
         createStream,
         uploadFile,
-        uploadMetadata,
         mintNFT,
+        videos,
+        metisTube,
+        loading,
       }}
     >
       {children}

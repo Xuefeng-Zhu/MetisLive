@@ -7,21 +7,26 @@ import ThumbUpAltOutlinedIcon from '@mui/icons-material/ThumbUpAltOutlined';
 import ReactPlayer from 'react-player';
 
 import { useStateContext } from '../contexts/StateContextProvider';
-import VideoItem from './VideoItem';
 import Loader from './Loader';
 
 const VideoDetail = () => {
   const { id } = useParams();
-  const { retrieveNFTDetails } = useStateContext();
-  const { isLoading, data } = useQuery(['NFTDetails', id], () =>
-    retrieveNFTDetails(id)
-  );
-  const videoDetail = data?.nft;
+  const { retrieveNFTDetails, videos, metisTube, loading } = useStateContext();
+
+  useEffect(async () => {
+    if (!metisTube) {
+      return;
+    }
+
+    await retrieveNFTDetails(id);
+  }, [metisTube, id]);
+
+  const videoDetail = videos[id];
   const videoSrc = videoDetail?.metadata.playbackId
     ? `https://cdn.livepeer.com/hls/${videoDetail?.metadata.playbackId}/index.m3u8`
-    : videoDetail?.metadata.external_url;
+    : videoDetail?.metadata.video;
 
-  if (isLoading) {
+  if (loading) {
     return <Loader />;
   }
 
@@ -55,7 +60,7 @@ const VideoDetail = () => {
                   views
                 </Typography> */}
               <Typography>
-                {new Date(videoDetail?.updated_date).toLocaleDateString()}
+                {new Date(videoDetail?.metadata.date).toLocaleDateString()}
               </Typography>
             </Box>
 
@@ -100,7 +105,7 @@ const VideoDetail = () => {
                     ).toLocaleString('en-US')}
                   </Typography>
                 </Typography>
-              </Box>*/}
+              </Box> */}
           </Box>
           <Typography>{videoDetail?.metadata.description}</Typography>
         </Box>

@@ -7,7 +7,7 @@ import {
 } from 'react';
 import Web3Modal from 'web3modal';
 
-import { Web3Provider } from '@ethersproject/providers';
+import { Web3Provider, JsonRpcProvider } from '@ethersproject/providers';
 
 const web3Modal = new Web3Modal({
   cacheProvider: true,
@@ -64,8 +64,13 @@ export const Web3ContextProvider = ({ children }) => {
   useEffect(() => {
     if (web3Modal.cachedProvider) {
       loadWeb3Modal();
+    } else {
+      const newProvider = new JsonRpcProvider(
+        'https://stardust.metis.io/?owner=588'
+      );
+      setProvider(newProvider);
     }
-  }, [loadWeb3Modal]);
+  }, []);
 
   return (
     <Web3Context.Provider

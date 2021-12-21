@@ -22,14 +22,15 @@
     "react-router-dom": "^5.3.0",
     "react-scripts": "4.0.3",
     "react-scroll-horizontal": "^1.6.6",
+    "react-use": "^17.3.1",
     "web-vitals": "^1.1.2",
     "web3modal": "^1.9.4"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject",
+    "start": "DISABLE_ESLINT_PLUGIN=true react-scripts start",
+    "build": "DISABLE_ESLINT_PLUGIN=true react-scripts build",
+    "test": "DISABLE_ESLINT_PLUGIN=true react-scripts test",
+    "eject": "DISABLE_ESLINT_PLUGIN=true react-scripts eject",
     "deploy-metis": "hardhat deploy --network metis --tags Metis"
   },
   "eslintConfig": {
@@ -55,6 +56,7 @@
     "@nomiclabs/hardhat-etherscan": "^2.1.8",
     "@nomiclabs/hardhat-waffle": "^2.0.1",
     "@openzeppelin/contracts": "^4.4.1",
+    "babel-eslint": "^10.1.0",
     "chai": "^4.3.4",
     "dotenv": "^10.0.0",
     "eslint": "^7.32.0",
@@ -64,6 +66,7 @@
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-prettier": "^3.4.1",
     "eslint-plugin-promise": "^5.2.0",
+    "eslint-plugin-react": "^7.27.1",
     "ethereum-waffle": "^3.4.0",
     "ethers": "^5.5.2",
     "hardhat": "^2.8.0",

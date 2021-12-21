@@ -8,10 +8,12 @@ module.exports = {
   extends: [
     'standard',
     'plugin:prettier/recommended',
-    'plugin:node/recommended',
+    'plugin:react/recommended',
   ],
+  parser: 'babel-eslint',
   parserOptions: {
-    ecmaVersion: 12,
+    sourceType: 'module',
+    allowImportExportEverywhere: true,
   },
   overrides: [
     {
@@ -19,4 +21,11 @@ module.exports = {
       globals: { task: true },
     },
   ],
+  rules: {
+    'node/no-unsupported-features/es-syntax': [
+      'error',
+      { ignores: ['modules'] },
+    ],
+    'prettier/prettier': ['error', { singleQuote: true }],
+  },
 };

@@ -22,7 +22,7 @@ const VideoItem = ({ metadata, id }) => {
           component="img"
           height="250"
           image={
-            metadata?.image ||
+            metadata?.thumbnail ||
             'https://i.pinimg.com/474x/30/88/a3/3088a3ebaf713600adacd00397ee410d.jpg'
           }
           alt="green iguana"

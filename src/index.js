@@ -11,13 +11,13 @@ const queryClient = new QueryClient();
 
 ReactDOM.render(
   <React.StrictMode>
-    <StateContextProvider>
-      <Web3ContextProvider>
+    <Web3ContextProvider>
+      <StateContextProvider>
         <QueryClientProvider client={queryClient}>
           <App />
         </QueryClientProvider>
-      </Web3ContextProvider>
-    </StateContextProvider>
+      </StateContextProvider>
+    </Web3ContextProvider>
   </React.StrictMode>,
   document.getElementById('root')
 );

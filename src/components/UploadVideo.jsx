@@ -37,10 +37,8 @@ const SearchFeed = () => {
       {
         name: values.name,
         description: values.description,
-        file_url: thumbnail.ipfs_url,
-        custom_fields: {
-          playbackId,
-        },
+        thumbnail: thumbnail.ipfs_url,
+        playbackId,
       },
       address
     );
@@ -76,8 +74,8 @@ const SearchFeed = () => {
           {
             name: values.name,
             description: values.description,
-            file_url: thumbnail.ipfs_url,
-            external_url: video.ipfs_url,
+            thumbnail: thumbnail.ipfs_url,
+            video: video.ipfs_url,
           },
           address
         );

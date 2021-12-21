@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Typography, Box, Button } from '@mui/material';
+import { Typography, Box, Button, Menu, MenuItem } from '@mui/material';
 import UploadIcon from '@mui/icons-material/Upload';
 import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
 
@@ -8,7 +8,8 @@ import SearchBar from './SearchBar';
 import { useWeb3Context } from '../contexts/Web3ContextProvider';
 
 const Navbar = () => {
-  const { loadWeb3Modal, address } = useWeb3Context();
+  const [anchorEl, setAnchorEl] = useState(null);
+  const { loadWeb3Modal, logoutOfWeb3Modal, address } = useWeb3Context();
 
   return (
     <Box
@@ -29,7 +30,7 @@ const Navbar = () => {
     >
       <Link to="/" style={{ textDecoration: 'none' }}>
         <Typography sx={{ fontSize: 25, color: 'red', fontWeight: 800 }}>
-          D📺live
+          Metis📺Tube
         </Typography>
       </Link>
       <Box
@@ -37,6 +38,7 @@ const Navbar = () => {
           display: 'flex',
           justifyContent: 'space-between',
           gap: '10',
+          marginRight: '10px',
         }}
       >
         {address ? (
@@ -48,6 +50,10 @@ const Navbar = () => {
               sx={{ mr: 2 }}
               variant="outlined"
               startIcon={<UploadIcon />}
+              onContextMenu={(event) => {
+                event.preventDefault();
+                setAnchorEl(event.currentTarget);
+              }}
             >
               Upload
             </Button>
@@ -62,8 +68,23 @@ const Navbar = () => {
             Connect to wallet
           </Button>
         )}
-
-        <SearchBar />
+        <Menu
+          anchorEl={anchorEl}
+          open={!!anchorEl}
+          onClose={() => {
+            setAnchorEl(null);
+          }}
+        >
+          <MenuItem
+            onClick={() => {
+              logoutOfWeb3Modal();
+              setAnchorEl(null);
+            }}
+          >
+            Logout
+          </MenuItem>
+        </Menu>
+        {/* <SearchBar /> */}
       </Box>
     </Box>
   );

@@ -1,20 +1,19 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Box } from '@mui/material';
-import { useQuery } from 'react-query';
 
-import { useStateContext } from '../contexts/StateContextProvider';
 import VideoItem from './VideoItem';
 import Loader from './Loader';
+import { useStateContext } from '../contexts/StateContextProvider';
 
 const Feed = () => {
-  const { retrieveContractNFT } = useStateContext();
-  const { isLoading, data } = useQuery('contractNFT', () =>
-    retrieveContractNFT(1)
-  );
+  const { retrieveContractNFT, videos, metisTube, loading } = useStateContext();
+  useEffect(async () => {
+    if (!metisTube) {
+      return;
+    }
 
-  if (isLoading) {
-    return <Loader />;
-  }
+    await retrieveContractNFT(0);
+  }, [metisTube]);
 
   return (
     <Box>
@@ -29,9 +28,10 @@ const Feed = () => {
           mt: 10,
         }}
       >
-        {data?.nfts.map(({ metadata, token_id }) => (
-          <VideoItem metadata={metadata} id={token_id} key={token_id} />
+        {Object.values(videos).map(({ metadata, tokenId }) => (
+          <VideoItem metadata={metadata} id={tokenId} key={tokenId} />
         ))}
+        {loading && <Loader />}
       </Box>
     </Box>
   );
