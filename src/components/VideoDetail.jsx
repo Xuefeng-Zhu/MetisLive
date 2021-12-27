@@ -1,17 +1,30 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { useQuery } from 'react-query';
-import { Typography, Box } from '@mui/material';
+import {
+  Typography,
+  Box,
+  Button,
+  Popover,
+  TextField,
+  InputAdornment,
+} from '@mui/material';
+import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
 import ThumbDownAltOutlinedIcon from '@mui/icons-material/ThumbDownAltOutlined';
 import ThumbUpAltOutlinedIcon from '@mui/icons-material/ThumbUpAltOutlined';
 import ReactPlayer from 'react-player';
+import { ethers } from 'ethers';
 
-import { useStateContext } from '../contexts/StateContextProvider';
 import Loader from './Loader';
+import { useStateContext } from '../contexts/StateContextProvider';
+import { useWeb3Context } from '../contexts/Web3ContextProvider';
 
 const VideoDetail = () => {
   const { id } = useParams();
+  const { signer } = useWeb3Context();
   const { retrieveNFTDetails, videos, metisTube, loading } = useStateContext();
+  const [tipBtnEl, setTipBtnEl] = useState(null);
+  const [tipAmount, setTipAmount] = useState();
 
   useEffect(async () => {
     if (!metisTube) {
@@ -20,6 +33,21 @@ const VideoDetail = () => {
 
     await retrieveNFTDetails(id);
   }, [metisTube, id]);
+
+  const openTipPop = (event) => {
+    setTipBtnEl(event.currentTarget);
+  };
+
+  const closeTipPop = () => {
+    setTipBtnEl(null);
+  };
+
+  const sendTip = async () => {
+    signer.sendTransaction({
+      to: await metisTube.ownerOf(id),
+      value: ethers.utils.parseEther(tipAmount),
+    });
+  };
 
   const videoDetail = videos[id];
   const videoSrc = videoDetail?.metadata.playbackId
@@ -64,52 +92,58 @@ const VideoDetail = () => {
               </Typography>
             </Box>
 
-            {/* <Box
-                sx={{
-                  opacity: 0.7,
-                  display: 'flex',
-                  flexWrap: 'wrap',
-                  gap: 3,
-                }}
-                className="like-dislike"
+            <Box
+              sx={{
+                opacity: 0.7,
+                display: 'flex',
+                flexWrap: 'wrap',
+                gap: 3,
+              }}
+              className="like-dislike"
+            >
+              <Button
+                variant="outlined"
+                startIcon={<AttachMoneyIcon />}
+                onClick={openTipPop}
               >
-                <Typography
-                  sx={{
-                    marginBottom: '5px',
-                    display: 'flex',
-                    justifyContent: 'flex-start',
-                    alignItems: 'center',
-                    gap: 1,
-                  }}
-                >
-                  <ThumbUpAltOutlinedIcon />
-                  <Typography>
-                    {parseInt(
-                      videoDetail?.statistics?.likeCount
-                    ).toLocaleString('en-US')}
-                  </Typography>
-                </Typography>
-                <Typography
-                  sx={{
-                    marginBottom: '5px',
-                    display: 'flex',
-                    justifyContent: 'flex-start',
-                    alignItems: 'center',
-                    gap: 1,
-                  }}
-                >
-                  <ThumbDownAltOutlinedIcon />
-                  <Typography>
-                    {parseInt(
-                      videoDetail?.statistics?.dislikeCount
-                    ).toLocaleString('en-US')}
-                  </Typography>
-                </Typography>
-              </Box> */}
+                Tip
+              </Button>
+            </Box>
           </Box>
           <Typography>{videoDetail?.metadata.description}</Typography>
         </Box>
       </Box>
+      <Popover
+        open={!!tipBtnEl}
+        anchorEl={tipBtnEl}
+        onClose={closeTipPop}
+        anchorOrigin={{
+          vertical: 'top',
+          horizontal: 'left',
+        }}
+      >
+        <TextField
+          label="Amount"
+          type="number"
+          variant="filled"
+          value={tipAmount}
+          sx={{ m: 1, width: '200px' }}
+          InputProps={{
+            endAdornment: <InputAdornment position="end">METIS</InputAdornment>,
+          }}
+          onChange={(event) => setTipAmount(event.target.value)}
+        />
+        <Button
+          sx={{
+            top: '15px',
+            mr: '5px',
+          }}
+          variant="outlined"
+          onClick={sendTip}
+        >
+          Send
+        </Button>
+      </Popover>
     </Box>
   );
 };
