@@ -1,42 +1,22 @@
-# Advanced Sample Hardhat Project
+## Inspiration
+Youtube is the most popular video platform, but it is centralized and easily censored. Therefore, it is demanding to create a decentralized and censorship-resistant video platform.
 
-This project demonstrates an advanced Hardhat use case, integrating other tools commonly used alongside Hardhat in the ecosystem.
+## What it does
 
-The project comes with a sample contract, a test for that contract, a sample script that deploys that contract, and an example of a task implementation, which simply lists the available accounts. It also comes with a variety of other tools, preconfigured to work with the project code.
+MetisLive is a decentralized video and live streaming platform powered by IPFS and NFT on Metis. When content creators upload videos, videos will be stored on IPFS and minted as a NFT. It is censorship-resistant because of IPFS. Content owners will also have strong ownership guarded by NFT. Content owners can also trade and profit from the video content they own. Viewers are able to tip the owners of videos and like/dislike the videos.
 
-Try running some of the following tasks:
+## How we built it
 
-```shell
-npx hardhat accounts
-npx hardhat compile
-npx hardhat clean
-npx hardhat test
-npx hardhat node
-npx hardhat help
-REPORT_GAS=true npx hardhat test
-npx hardhat coverage
-npx hardhat run scripts/deploy.js
-node scripts/deploy.js
-npx eslint '**/*.js'
-npx eslint '**/*.js' --fix
-npx prettier '**/*.{json,sol,md}' --check
-npx prettier '**/*.{json,sol,md}' --write
-npx solhint 'contracts/**/*.sol'
-npx solhint 'contracts/**/*.sol' --fix
-```
+MetisLive is built with React and MUI. MetisLive uses NFTPort API to upload video file to IPFS, and mint a NFT on Metis. Since Metis currently does not have index service like Graph, MetisLive reads data through rpc node currently. MetisLive is hosted through 4everland on IPFS.
 
-# Etherscan verification
+## Challenges we ran into
+It is tricky to create a thumbnail from the browser. I am using canvas to take a snapshot of the video.
 
-To try out Etherscan verification, you first need to deploy a contract to an Ethereum network that's supported by Etherscan, such as Ropsten.
+## Accomplishments that we're proud of
+It is exciting that MetisLive supports the basic most needs of the video platform. It also provides a meaningful way for content creators to earn money besides advertisement.
 
-In this project, copy the .env.example file to a file named .env, and then edit it to fill in the details. Enter your Etherscan API key, your Ropsten node URL (eg from Alchemy), and the private key of the account which will send the deployment transaction. With a valid .env file in place, first deploy your contract:
+## What we learned
+It is my first time to build a NFT based Dapp. So I learn a lot about NFT and IPFS ecosystem. 
 
-```shell
-hardhat run --network ropsten scripts/deploy.js
-```
-
-Then, copy the deployment address and paste it in to replace `DEPLOYED_CONTRACT_ADDRESS` in this command:
-
-```shell
-npx hardhat verify --network ropsten DEPLOYED_CONTRACT_ADDRESS "Hello, Hardhat!"
-```
+## What's next for MetisLive
+Further improve the UI to include a feature like video search, user profile, and subscription. 
