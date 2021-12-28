@@ -21,9 +21,10 @@ import { useWeb3Context } from '../contexts/Web3ContextProvider';
 
 const VideoDetail = () => {
   const { id } = useParams();
-  const { signer } = useWeb3Context();
+  const { signer, address } = useWeb3Context();
   const { retrieveNFTDetails, videos, metisTube, loading } = useStateContext();
-  const [tipBtnEl, setTipBtnEl] = useState(null);
+  const [videoStat, setVideoStat] = useState({});
+  const [tipBtnEl, setTipBtnEl] = useState();
   const [tipAmount, setTipAmount] = useState();
 
   useEffect(async () => {
@@ -32,7 +33,20 @@ const VideoDetail = () => {
     }
 
     await retrieveNFTDetails(id);
-  }, [metisTube, id]);
+
+    const tokenStatistics = await metisTube.tokenStatistics(id);
+    const vs = {
+      likes: tokenStatistics.likes.toNumber(),
+      dislikes: tokenStatistics.dislikes.toNumber(),
+    };
+
+    if (address) {
+      vs.liked = await metisTube.likes(id, address);
+      vs.disliked = await metisTube.dislikes(id, address);
+    }
+
+    setVideoStat(vs);
+  }, [metisTube, id, address]);
 
   const openTipPop = (event) => {
     setTipBtnEl(event.currentTarget);
@@ -42,12 +56,49 @@ const VideoDetail = () => {
     setTipBtnEl(null);
   };
 
-  const sendTip = async () => {
+  async function sendTip() {
+    if (!signer) {
+      alert('Please connect wallet to perform this action');
+      return;
+    }
+
     signer.sendTransaction({
       to: await metisTube.ownerOf(id),
       value: ethers.utils.parseEther(tipAmount),
     });
-  };
+  }
+
+  async function likeVideo() {
+    if (!signer) {
+      alert('Please connect wallet to perform this action');
+    }
+
+    const vs = { ...videoStat, liked: !videoStat.liked };
+    if (vs.liked) {
+      vs.likes += 1;
+    } else {
+      vs.likes -= 1;
+    }
+
+    await metisTube.toggleLike(id, vs.liked);
+    setVideoStat(vs);
+  }
+
+  async function dislikeVideo() {
+    if (!signer) {
+      alert('Please connect wallet to perform this action');
+    }
+
+    const vs = { ...videoStat, disliked: !videoStat.disliked };
+    if (vs.disliked) {
+      vs.dislikes += 1;
+    } else {
+      vs.dislikes -= 1;
+    }
+
+    await metisTube.toggleLike(id, vs.disliked);
+    setVideoStat(vs);
+  }
 
   const videoDetail = videos[id];
   const videoSrc = videoDetail?.metadata.playbackId
@@ -81,12 +132,6 @@ const VideoDetail = () => {
           </Typography>
           <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
             <Box sx={{ opacity: 0.7 }}>
-              {/* <Typography sx={{ marginBottom: '5px' }}>
-                  {parseInt(videoDetail?.statistics?.viewCount).toLocaleString(
-                    'en-US'
-                  )}{' '}
-                  views
-                </Typography> */}
               <Typography>
                 {new Date(videoDetail?.metadata.date).toLocaleDateString()}
               </Typography>
@@ -108,6 +153,38 @@ const VideoDetail = () => {
               >
                 Tip
               </Button>
+              <Typography
+                sx={{
+                  marginBottom: '5px',
+                  display: 'flex',
+                  justifyContent: 'flex-start',
+                  alignItems: 'center',
+                  cursor: 'pointer',
+                  gap: 1,
+                }}
+                onClick={likeVideo}
+              >
+                <ThumbUpAltOutlinedIcon
+                  color={videoStat.liked ? 'primary' : ''}
+                />
+                <Typography>{videoStat.likes}</Typography>
+              </Typography>
+              <Typography
+                sx={{
+                  marginBottom: '5px',
+                  display: 'flex',
+                  justifyContent: 'flex-start',
+                  alignItems: 'center',
+                  cursor: 'pointer',
+                  gap: 1,
+                }}
+                onClick={dislikeVideo}
+              >
+                <ThumbDownAltOutlinedIcon
+                  color={videoStat.disliked ? 'primary' : ''}
+                />
+                <Typography>{videoStat.dislikes}</Typography>
+              </Typography>
             </Box>
           </Box>
           <Typography>{videoDetail?.metadata.description}</Typography>

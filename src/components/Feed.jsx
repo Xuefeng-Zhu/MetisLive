@@ -12,7 +12,7 @@ const Feed = () => {
       return;
     }
 
-    await retrieveContractNFT(0);
+    await retrieveContractNFT(1);
   }, [metisTube]);
 
   return (

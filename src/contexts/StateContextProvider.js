@@ -24,12 +24,10 @@ export const StateContextProvider = ({ children }) => {
 
   const retrieveContractNFT = async (pageNumber) => {
     setLoading(true);
-    const blockStart = 53436 + 5000 * pageNumber;
-    const blockEnd = 53436 + 5000 * (pageNumber + 1);
+    const blockStart = -5000 * pageNumber;
     const transfers = await metisTube.queryFilter(
       metisTube.filters.Transfer(),
-      blockStart,
-      blockEnd
+      blockStart
     );
     setLoading(false);
 

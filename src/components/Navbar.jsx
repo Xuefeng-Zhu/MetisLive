@@ -30,7 +30,7 @@ const Navbar = () => {
     >
       <Link to="/" style={{ textDecoration: 'none' }}>
         <Typography sx={{ fontSize: 25, color: 'red', fontWeight: 800 }}>
-          Metis📺Tube
+          Metis📺Live
         </Typography>
       </Link>
       <Box
